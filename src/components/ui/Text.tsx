@@ -7,12 +7,12 @@ interface Props extends TextProps {
 
 export const Text = ({ variant = "body", className = "", ...props }: Props) => {
     const variantStyles = {
-        h1: "text-3xl font-bold text-text-dark",
-        h2: "text-2xl font-semibold text-text-dark",
-        h3: "text-xl font-medium text-text-dark",
-        body: "text-base text-text-secondary",
-        caption: "text-sm text-text-accent",
-        primary: "text-base text-text-primary",
+        h1: "text-2xl font-bold text-text-dark",
+        h2: "text-xl font-semibold text-text-dark",
+        h3: "text-lg font-medium text-text-dark",
+        body: "text-[15px] text-text-secondary leading-6",
+        caption: "text-xs text-text-accent",
+        primary: "text-[15px] text-text-primary",
     };
 
     return (

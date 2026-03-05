@@ -33,12 +33,12 @@ export const Button = ({
 
     return (
         <TouchableOpacity
-            className={`py-3 px-6 rounded-xl items-center justify-center ${variantStyles[variant]} ${className} ${props.disabled ? "opacity-50" : ""}`}
+            className={`h-12 px-6 rounded-xl items-center justify-center ${variantStyles[variant]} ${className} ${props.disabled ? "opacity-50" : ""}`}
             disabled={loading || props.disabled}
             {...props}
         >
             <Text
-                className={`font-semibold ${textStyles[variant]} ${textClassName}`}
+                className={`font-semibold text-[15px] ${textStyles[variant]} ${textClassName}`}
             >
                 {loading ? "Loading..." : label}
             </Text>

@@ -6,6 +6,14 @@ module.exports = function (api) {
       "nativewind/babel",
     ],
     plugins: [
+      "transform-import-meta",
+      [
+        "transform-define",
+        {
+          "import.meta.env.MODE": "process.env.NODE_ENV",
+          "import.meta.env": "process.env",
+        },
+      ],
       [
         "module-resolver",
         {
