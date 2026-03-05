@@ -20,7 +20,7 @@ export const CustomTabBar = ({ state, descriptors, navigation }: any) => {
                 iconName = isFocused ? "cart" : "cart-outline";
                 break;
             case "orders":
-                iconName = isFocused ? "receipt" : "receipt-outline";
+                iconName = isFocused ? "chatbubble-ellipses" : "chatbubble-ellipses-outline";
                 break;
             case "profile":
                 iconName = isFocused ? "person" : "person-outline";
