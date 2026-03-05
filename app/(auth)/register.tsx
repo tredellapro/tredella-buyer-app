@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Text } from "@/components/ui/Text";
 import { Select } from "@/components/ui/Select";
+import { PhoneInput } from "@/components/ui/PhoneInput";
 import AuthLayoutWrapper from "@/components/layout/AuthLayoutWrapper";
 import {
     emailCheckSchema,
@@ -133,6 +134,17 @@ export default function RegisterScreen() {
 
     // Step 3 Submit
     const onStep3Submit = async (data: typeof locationDetailsSchema._output) => {
+        // Basic country-aware phone validation
+        const country = countries.find(c => c.code === data.country);
+        if (country) {
+            const prefix = country.phoneCode.startsWith("+") ? country.phoneCode : `+${country.phoneCode}`;
+            const localPart = data.phone.replace(prefix, "");
+            if (localPart.length < 7 || localPart.length > 12) {
+                locationForm.setError("phone", { message: "Please enter a valid phone number (7-12 digits)" });
+                return;
+            }
+        }
+
         setIsLoading(true);
         try {
             const response = await authService.checkPhone(data.phone);
@@ -273,7 +285,7 @@ export default function RegisterScreen() {
 
     const renderStep2 = () => (
         <View className="mb-8">
-            <View className="flex-row gap-4 mb-4">
+            <View className="flex-col mb-4">
                 <View className="flex-1">
                     <Controller
                         control={personalForm.control}
@@ -329,7 +341,7 @@ export default function RegisterScreen() {
                 name="addressLine1"
                 render={({ field: { onChange, onBlur, value } }) => (
                     <Input
-                        label="Address Line 1"
+                        label="Enter Address"
                         placeholder="123 Street Name"
                         onBlur={onBlur}
                         onChangeText={onChange}
@@ -340,7 +352,7 @@ export default function RegisterScreen() {
                     />
                 )}
             />
-            <Controller
+            {/* <Controller
                 control={locationForm.control}
                 name="addressLine2"
                 render={({ field: { onChange, onBlur, value } }) => (
@@ -353,9 +365,9 @@ export default function RegisterScreen() {
                         editable={!isLoading}
                     />
                 )}
-            />
+            /> */}
 
-            <View className="mb-4">
+            <View className="">
                 <Controller
                     control={locationForm.control}
                     name="country"
@@ -373,7 +385,7 @@ export default function RegisterScreen() {
                 />
             </View>
 
-            <View className="flex-row gap-4 mb-4">
+            <View className="flex-row gap-4 ">
                 <View className="flex-1">
                     <Controller
                         control={locationForm.control}
@@ -430,17 +442,18 @@ export default function RegisterScreen() {
             <Controller
                 control={locationForm.control}
                 name="phone"
-                render={({ field: { onChange, onBlur, value } }) => (
-                    <Input
+                render={({ field: { onChange, value } }) => (
+                    <PhoneInput
                         label="Phone Number"
-                        placeholder="+1234567890"
-                        onBlur={onBlur}
+                        placeholder={locationForm.watch("country") ? "Enter your phone number" : "Select country first"}
                         onChangeText={onChange}
                         value={value}
+                        countries={countries}
+                        selectedCountryCode={locationForm.watch("country")}
+                        isCountryPickerDisabled={true}
                         error={locationForm.formState.errors.phone?.message}
-                        editable={!isLoading}
+                        disabled={isLoading || !locationForm.watch("country")}
                         required
-                        keyboardType="phone-pad"
                     />
                 )}
             />

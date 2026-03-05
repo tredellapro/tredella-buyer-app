@@ -1,14 +1,8 @@
 import React, { useState, useMemo } from "react";
-import {
-    View,
-    TouchableOpacity,
-    Modal,
-    FlatList,
-    SafeAreaView,
-} from "react-native";
-import { Text } from "./Text";
+import { View, TouchableOpacity, FlatList } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-
+import { Text } from "./Text";
+import { Modal as CustomModal } from "./Modal";
 import { Input } from "./Input";
 
 interface Option {
@@ -84,74 +78,60 @@ export const Select = ({
                 </Text>
             )}
 
-            <Modal
-                visible={modalVisible}
-                animationType="slide"
-                transparent={true}
-                onRequestClose={handleClose}
+            <CustomModal
+                isVisible={modalVisible}
+                onClose={handleClose}
+                title={label || "Select Option"}
             >
-                <View className="flex-1 bg-black/50 justify-end">
-                    <View className="bg-background-white rounded-t-3xl max-h-[85%]">
-                        <SafeAreaView className="flex-1">
-                            <View className="p-4 border-b border-border-secondary flex-row items-center justify-between">
-                                <Text variant="h3">{label || "Select Option"}</Text>
-                                <TouchableOpacity onPress={handleClose}>
-                                    <Ionicons name="close" size={24} color="#2b3445" />
-                                </TouchableOpacity>
-                            </View>
-
-                            {/* Search Bar using dynamic Input component */}
-                            <View className="px-4 py-2 border-b border-border-light">
-                                <Input
-                                    placeholder="Search..."
-                                    value={searchQuery}
-                                    onChangeText={setSearchQuery}
-                                    autoCorrect={false}
-                                    className="mb-0"
-                                />
-                            </View>
-
-                            <FlatList
-                                data={filteredOptions}
-                                keyExtractor={(item) => item.value.toString()}
-                                ListEmptyComponent={
-                                    <View className="p-10 items-center">
-                                        <Text className="text-text-accent text-center">No results found for "{searchQuery}"</Text>
-                                    </View>
-                                }
-                                renderItem={({ item }) => (
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            onValueChange(item.value);
-                                            handleClose();
-                                        }}
-                                        className={`p-4 border-b border-border-light flex-row items-center justify-between ${value === item.value ? "bg-background-light" : ""
-                                            }`}
-                                    >
-                                        <Text
-                                            className={
-                                                value === item.value
-                                                    ? "text-text-primary font-semibold"
-                                                    : "text-text-secondary"
-                                            }
-                                        >
-                                            {item.label}
-                                        </Text>
-                                        {value === item.value && (
-                                            <Ionicons name="checkmark" size={20} color="#e94560" />
-                                        )}
-                                    </TouchableOpacity>
-                                )}
-                                contentContainerStyle={{ paddingBottom: 40 }}
-                                keyboardShouldPersistTaps="handled"
-                                initialNumToRender={15}
-                                maxToRenderPerBatch={10}
-                                windowSize={6}
-                            />
-                        </SafeAreaView>
-                    </View>
+                {/* Search Bar using dynamic Input component */}
+                <View className="px-4 py-2 border-b border-border-light">
+                    <Input
+                        placeholder="Search..."
+                        value={searchQuery}
+                        onChangeText={setSearchQuery}
+                        autoCorrect={false}
+                        className="mb-0"
+                    />
                 </View>
-            </Modal>
+
+                <FlatList
+                    data={filteredOptions}
+                    keyExtractor={(item) => item.value.toString()}
+                    ListEmptyComponent={
+                        <View className="p-10 items-center">
+                            <Text className="text-text-accent text-center">No results found for "{searchQuery}"</Text>
+                        </View>
+                    }
+                    renderItem={({ item }) => (
+                        <TouchableOpacity
+                            onPress={() => {
+                                onValueChange(item.value);
+                                handleClose();
+                            }}
+                            className={`p-4 border-b border-border-light flex-row items-center justify-between ${value === item.value ? "bg-background-light" : ""
+                                }`}
+                        >
+                            <Text
+                                className={
+                                    value === item.value
+                                        ? "text-text-primary font-semibold"
+                                        : "text-text-secondary"
+                                }
+                            >
+                                {item.label}
+                            </Text>
+                            {value === item.value && (
+                                <Ionicons name="checkmark" size={20} color="#e94560" />
+                            )}
+                        </TouchableOpacity>
+                    )}
+                    contentContainerStyle={{ paddingBottom: 40 }}
+                    keyboardShouldPersistTaps="handled"
+                    initialNumToRender={15}
+                    maxToRenderPerBatch={10}
+                    windowSize={6}
+                />
+            </CustomModal>
         </View>
     );
 };
