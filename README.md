@@ -1,1 +1,0 @@
-# tredella-buyer-app
