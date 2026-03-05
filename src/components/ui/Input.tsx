@@ -109,7 +109,7 @@ export const Input = forwardRef<TextInput, Props>(
                 <View className="relative justify-center">
                     <TextInput
                         ref={ref}
-                        className={`text-text-dark text-[15px] bg-background-light border rounded-xl px-4 h-12 outline-none ${getBorderColor()} ${props.editable === false ? "opacity-60" : ""
+                        className={`text-text-dark text-[15px] bg-background-light border rounded-lg px-4 h-12 outline-none ${getBorderColor()} ${props.editable === false ? "opacity-60" : ""
                             } ${secureTextEntry ? "pr-12" : ""} ${inputClassName}`}
                         placeholderTextColor="#697282"
                         autoCapitalize="none"

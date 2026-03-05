@@ -6,7 +6,9 @@ import { User } from "@/types";
 interface AuthState {
   user: User | null;
   token: string | null;
-  setAuth: (user: User, token: string) => void;
+  refreshToken: string | null;
+  setAuth: (user: User, token: string, refreshToken: string) => void;
+  setTokens: (token: string, refreshToken: string) => void;
   logout: () => void;
 }
 
@@ -15,8 +17,11 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       user: null,
       token: null,
-      setAuth: (user, token) => set({ user, token }),
-      logout: () => set({ user: null, token: null }),
+      refreshToken: null,
+      setAuth: (user, token, refreshToken) =>
+        set({ user, token, refreshToken }),
+      setTokens: (token, refreshToken) => set({ token, refreshToken }),
+      logout: () => set({ user: null, token: null, refreshToken: null }),
     }),
     {
       name: "auth-storage",

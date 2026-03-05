@@ -55,7 +55,7 @@ export const TextArea = forwardRef<TextInput, Props>(
 
                 <TextInput
                     ref={ref}
-                    className={`text-text-dark text-[15px] min-h-[100px] text-top bg-background-light border rounded-xl px-4 py-3 outline-none ${getBorderColor()} ${props.editable === false ? "opacity-60" : ""
+                    className={`text-text-dark text-[15px] min-h-[100px] text-top bg-background-light border rounded-lg px-4 py-3 outline-none ${getBorderColor()} ${props.editable === false ? "opacity-60" : ""
                         } ${inputClassName}`}
                     placeholderTextColor="#697282"
                     multiline

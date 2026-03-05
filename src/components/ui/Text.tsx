@@ -1,7 +1,7 @@
 import { Text as RNText, TextProps } from "react-native";
 
 interface Props extends TextProps {
-    variant?: "h1" | "h2" | "h3" | "body" | "caption";
+    variant?: "h1" | "h2" | "h3" | "body" | "caption" | "primary";
     className?: string;
 }
 

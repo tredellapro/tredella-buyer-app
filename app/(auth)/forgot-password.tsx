@@ -1,14 +1,15 @@
-import React, { useState } from "react";
-import { View, ScrollView, SafeAreaView } from "react-native";
-import { useForm, Controller } from "react-hook-form";
+import { authService } from "@/api/authService";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { ForgotPasswordFormData, forgotPasswordSchema } from "@/utils/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
-import { forgotPasswordSchema, ForgotPasswordFormData } from "@/utils/validation";
-import { apiClient } from "@/api";
-import { Input } from "@/components/ui/Input";
-import { Button } from "@/components/ui/Button";
-import { Text } from "@/components/ui/Text";
+import React, { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import Toast from "react-native-toast-message";
+
+import AuthLayoutWrapper from "@/components/layout/AuthLayoutWrapper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ForgotPasswordScreen() {
     const router = useRouter();
@@ -28,13 +29,26 @@ export default function ForgotPasswordScreen() {
     const onSubmit = async (data: ForgotPasswordFormData) => {
         setIsLoading(true);
         try {
-            await apiClient.post("/auth/forgot-password", data);
-            Toast.show({
-                type: "success",
-                text1: "Email Sent",
-                text2: "Please check your inbox for reset instructions",
-            });
-            router.push("/(auth)/login");
+            const result = await authService.forgotPassword({ ...data, role: "BUYER" });
+            if (result.success) {
+                // Clear any existing timer for this email to ensure a fresh 60s
+                await AsyncStorage.removeItem(`otp_timer_expiry_${data.email}`);
+                Toast.show({
+                    type: "success",
+                    text1: "OTP Sent",
+                    text2: result.data?.message || "Please check your inbox for the verification code",
+                });
+                router.push({
+                    pathname: "/(auth)/otp-verification",
+                    params: { email: data.email }
+                });
+            } else {
+                Toast.show({
+                    type: "error",
+                    text1: "Request Failed",
+                    text2: result.message || "Could not process request",
+                });
+            }
         } catch (error: any) {
             // Handled by interceptor
         } finally {
@@ -43,45 +57,39 @@ export default function ForgotPasswordScreen() {
     };
 
     return (
-        <SafeAreaView className="flex-1 bg-background-white">
-            <View className="p-6">
-                <View className="mb-10 mt-10">
-                    <Text variant="h1" className="mb-2">Forgot Password</Text>
-                    <Text variant="body" className="text-text-accent">
-                        Enter your email address and we'll send you a link to reset your password
-                    </Text>
-                </View>
+        <AuthLayoutWrapper title="Forgot Password" description="Enter your email address and we'll send you a otp to reset your password">
 
-                <Controller
-                    control={control}
-                    name="email"
-                    render={({ field: { onChange, onBlur, value } }) => (
-                        <Input
-                            label="Email Address"
-                            placeholder="name@example.com"
-                            onBlur={onBlur}
-                            onChangeText={onChange}
-                            value={value}
-                            error={errors.email?.message}
-                            keyboardType="email-address"
-                            editable={!isLoading}
-                        />
-                    )}
-                />
+            <Controller
+                control={control}
+                name="email"
+                render={({ field: { onChange, onBlur, value } }) => (
+                    <Input
+                        label="Email Address"
+                        placeholder="name@example.com"
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        value={value}
+                        error={errors.email?.message}
+                        keyboardType="email-address"
+                        editable={!isLoading}
+                    />
+                )}
+            />
 
-                <Button
-                    label="Send Reset Link"
-                    onPress={handleSubmit(onSubmit)}
-                    loading={isLoading}
-                    className="mt-4 mb-6"
-                />
+            <Button
+                label="Send Reset Link"
+                onPress={handleSubmit(onSubmit)}
+                loading={isLoading}
+                className="mt-4 mb-6"
+            />
 
-                <Button
-                    label="Back to Login"
-                    variant="ghost"
-                    onPress={() => router.back()}
-                />
-            </View>
-        </SafeAreaView>
+            <Button
+                label="Back to Login"
+                variant="ghost"
+                onPress={() => router.back()}
+            />
+
+
+        </AuthLayoutWrapper>
     );
 }

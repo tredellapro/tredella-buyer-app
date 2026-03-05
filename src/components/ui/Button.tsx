@@ -33,14 +33,14 @@ export const Button = ({
 
     return (
         <TouchableOpacity
-            className={`h-12 px-6 rounded-xl items-center justify-center ${variantStyles[variant]} ${className} ${props.disabled ? "opacity-50" : ""}`}
+            className={`h-12 px-6 rounded-lg items-center justify-center ${variantStyles[variant]} ${className} ${props.disabled ? "opacity-50" : ""}`}
             disabled={loading || props.disabled}
             {...props}
         >
             <Text
                 className={`font-semibold text-[15px] ${textStyles[variant]} ${textClassName}`}
             >
-                {loading ? "Loading..." : label}
+                {label}
             </Text>
         </TouchableOpacity>
     );

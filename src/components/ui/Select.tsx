@@ -52,7 +52,7 @@ export const Select = ({
             <TouchableOpacity
                 onPress={() => !disabled && setModalVisible(true)}
                 activeOpacity={0.7}
-                className={`bg-background-light border rounded-xl px-4 h-12 flex-row items-center justify-between ${error ? "border-border-primary" : "border-border-secondary"
+                className={`bg-background-light border rounded-lg px-4 h-12 flex-row items-center justify-between ${error ? "border-border-primary" : "border-border-secondary"
                     } ${disabled ? "opacity-60" : ""}`}
             >
                 <Text

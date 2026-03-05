@@ -10,8 +10,14 @@ export interface Product {
 export interface User {
   id: string;
   email: string;
-  name: string;
-  token?: string;
+  firstName: string;
+  lastName: string;
+  role: string;
+  status: string;
+  permissions: string[];
+  emailVerified: boolean;
+  avatar: string | null;
+  tenantId: string;
 }
 
 export interface CartItem extends Product {

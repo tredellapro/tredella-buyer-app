@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Text } from "@/components/ui/Text";
 import Toast from "react-native-toast-message";
+import AuthLayoutWrapper from "@/components/layout/AuthLayoutWrapper";
 
 export default function RegisterScreen() {
     const router = useRouter();
@@ -23,7 +24,8 @@ export default function RegisterScreen() {
     } = useForm<RegisterFormData>({
         resolver: zodResolver(registerSchema),
         defaultValues: {
-            name: "",
+            firstName: "",
+            lastName: "",
             email: "",
             password: "",
             confirmPassword: "",
@@ -34,12 +36,12 @@ export default function RegisterScreen() {
         setIsLoading(true);
         try {
             const response = await authService.register(data);
-            if (response.data) {
-                setAuth(response.data.user, response.data.token);
+            if (response.success) {
+                setAuth(response.data.user, response.data.accessToken, response.data.refreshToken);
                 Toast.show({
                     type: "success",
                     text1: "Account Created",
-                    text2: `Welcome to Tredella, ${data.name}!`,
+                    text2: `Welcome to Tredella, ${response.data.user.firstName}!`,
                 });
                 router.replace("/(tabs)");
             }
@@ -51,104 +53,124 @@ export default function RegisterScreen() {
     };
 
     return (
-        <SafeAreaView className="flex-1 bg-background-white">
-            <ScrollView contentContainerStyle={{ flexGrow: 1 }} className="p-6">
-                <View className="mb-10 mt-5">
-                    <Text variant="h1" className="mb-2">Create Account</Text>
-                    <Text variant="body" className="text-text-accent">
-                        Join Tredella and start shopping today
-                    </Text>
+
+        <AuthLayoutWrapper title="Create Account" description="Start by entering your email address">
+
+
+
+            <View className="mb-8">
+                <View className="flex-row gap-4 ">
+                    <View className="flex-1">
+                        <Controller
+                            control={control}
+                            name="firstName"
+                            render={({ field: { onChange, onBlur, value } }) => (
+                                <Input
+                                    label="First Name"
+                                    placeholder="Jane"
+                                    onBlur={onBlur}
+                                    onChangeText={onChange}
+                                    value={value}
+                                    error={errors.firstName?.message}
+                                    editable={!isLoading}
+                                    required
+                                />
+                            )}
+                        />
+                    </View>
+                    <View className="flex-1">
+                        <Controller
+                            control={control}
+                            name="lastName"
+                            render={({ field: { onChange, onBlur, value } }) => (
+                                <Input
+                                    label="Last Name"
+                                    placeholder="Buyer"
+                                    onBlur={onBlur}
+                                    onChangeText={onChange}
+                                    value={value}
+                                    error={errors.lastName?.message}
+                                    editable={!isLoading}
+                                    required
+                                />
+                            )}
+                        />
+                    </View>
                 </View>
 
-                <View className="mb-8">
-                    <Controller
-                        control={control}
-                        name="name"
-                        render={({ field: { onChange, onBlur, value } }) => (
-                            <Input
-                                label="Full Name"
-                                placeholder="Your full name"
-                                onBlur={onBlur}
-                                onChangeText={onChange}
-                                value={value}
-                                error={errors.name?.message}
-                                editable={!isLoading}
-                            />
-                        )}
-                    />
-
-                    <Controller
-                        control={control}
-                        name="email"
-                        render={({ field: { onChange, onBlur, value } }) => (
-                            <Input
-                                label="Email Address"
-                                placeholder="name@example.com"
-                                onBlur={onBlur}
-                                onChangeText={onChange}
-                                value={value}
-                                error={errors.email?.message}
-                                keyboardType="email-address"
-                                editable={!isLoading}
-                            />
-                        )}
-                    />
-
-                    <Controller
-                        control={control}
-                        name="password"
-                        render={({ field: { onChange, onBlur, value } }) => (
-                            <Input
-                                label="Password"
-                                placeholder="create a password"
-                                onBlur={onBlur}
-                                onChangeText={onChange}
-                                value={value}
-                                error={errors.password?.message}
-                                secureTextEntry
-                                editable={!isLoading}
-                            />
-                        )}
-                    />
-
-                    <Controller
-                        control={control}
-                        name="confirmPassword"
-                        render={({ field: { onChange, onBlur, value } }) => (
-                            <Input
-                                label="Confirm Password"
-                                placeholder="confirm your password"
-                                onBlur={onBlur}
-                                onChangeText={onChange}
-                                value={value}
-                                error={errors.confirmPassword?.message}
-                                secureTextEntry
-                                editable={!isLoading}
-                            />
-                        )}
-                    />
-                </View>
-
-                <Button
-                    label="Create Account"
-                    onPress={handleSubmit(onSubmit)}
-                    loading={isLoading}
-                    className="mb-6"
+                <Controller
+                    control={control}
+                    name="email"
+                    render={({ field: { onChange, onBlur, value } }) => (
+                        <Input
+                            label="Email Address"
+                            placeholder="name@example.com"
+                            onBlur={onBlur}
+                            onChangeText={onChange}
+                            value={value}
+                            error={errors.email?.message}
+                            keyboardType="email-address"
+                            editable={!isLoading}
+                        />
+                    )}
                 />
 
-                <View className="flex-row justify-center items-center">
-                    <Text variant="body" className="text-text-accent">
-                        Already have an account?{" "}
-                    </Text>
-                    <Link href="/(auth)/login" asChild>
-                        <TouchableOpacity>
-                            <Text variant="body" className="text-text-primary font-bold">
-                                Login
-                            </Text>
-                        </TouchableOpacity>
-                    </Link>
-                </View>
-            </ScrollView>
-        </SafeAreaView>
+                <Controller
+                    control={control}
+                    name="password"
+                    render={({ field: { onChange, onBlur, value } }) => (
+                        <Input
+                            label="Password"
+                            placeholder="create a password"
+                            onBlur={onBlur}
+                            onChangeText={onChange}
+                            value={value}
+                            error={errors.password?.message}
+                            secureTextEntry
+                            editable={!isLoading}
+                        />
+                    )}
+                />
+
+                <Controller
+                    control={control}
+                    name="confirmPassword"
+                    render={({ field: { onChange, onBlur, value } }) => (
+                        <Input
+                            label="Confirm Password"
+                            placeholder="confirm your password"
+                            onBlur={onBlur}
+                            onChangeText={onChange}
+                            value={value}
+                            error={errors.confirmPassword?.message}
+                            secureTextEntry
+                            editable={!isLoading}
+                        />
+                    )}
+                />
+            </View>
+
+
+            <Button
+                label="Create Account"
+                onPress={handleSubmit(onSubmit)}
+                loading={isLoading}
+                className="mb-6"
+            />
+
+            <View className="flex-row justify-center items-center">
+                <Text variant="body" className="text-text-accent">
+                    Already have an account?{" "}
+                </Text>
+                <Link href="/(auth)/login" asChild>
+                    <TouchableOpacity>
+                        <Text variant="body" className="text-text-primary font-bold">
+                            Login
+                        </Text>
+                    </TouchableOpacity>
+                </Link>
+            </View>
+
+        </AuthLayoutWrapper>
     );
 }

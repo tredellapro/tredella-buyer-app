@@ -27,11 +27,8 @@ import {
 
 const queryClient = new QueryClient();
 
-// Keep the splash screen visible while we fetch resources
-SplashScreen.preventAutoHideAsync();
-
 export default function RootLayout() {
-    const [loaded, error] = useFonts({
+    const [fontsLoaded, fontError] = useFonts({
         Poppins_400Regular,
         Poppins_500Medium,
         Poppins_600SemiBold,
@@ -39,12 +36,26 @@ export default function RootLayout() {
     });
 
     useEffect(() => {
-        if (loaded || error) {
-            SplashScreen.hideAsync();
-        }
-    }, [loaded, error]);
+        // Prevent auto-hide on mount
+        SplashScreen.preventAutoHideAsync().catch(() => {
+            /* ignore */
+        });
+    }, []);
 
-    if (!loaded && !error) {
+    useEffect(() => {
+        if (fontsLoaded || fontError) {
+            // Add a slight delay to ensure the UI is ready to paint
+            // and the user actually sees the splash screen
+            const timer = setTimeout(async () => {
+                await SplashScreen.hideAsync().catch(() => {
+                    /* ignore */
+                });
+            }, 500);
+            return () => clearTimeout(timer);
+        }
+    }, [fontsLoaded, fontError]);
+
+    if (!fontsLoaded && !fontError) {
         return null;
     }
 
