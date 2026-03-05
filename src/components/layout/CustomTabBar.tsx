@@ -1,11 +1,16 @@
 import React from "react";
-import { View, TouchableOpacity, StyleSheet, Platform, Animated } from "react-native";
+import { View, TouchableOpacity, StyleSheet, Platform } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { Text } from "../ui/Text";
+import { useAuthStore } from "@/store/authStore";
+
+// Tabs that require authentication
+const PROTECTED_TABS = ["profile", "chat"];
 
 export const CustomTabBar = ({ state, descriptors, navigation }: any) => {
     const insets = useSafeAreaInsets();
+    const { token } = useAuthStore();
 
     const getIcon = (name: string, isFocused: boolean) => {
         let iconName: any = "";
@@ -19,8 +24,8 @@ export const CustomTabBar = ({ state, descriptors, navigation }: any) => {
             case "cart":
                 iconName = isFocused ? "cart" : "cart-outline";
                 break;
-            case "orders":
-                iconName = isFocused ? "chatbubble-ellipses" : "chatbubble-ellipses-outline";
+            case "chats":
+                iconName = isFocused ? "chatbox-ellipses-outline" : "chatbox-ellipses-outline";
                 break;
             case "profile":
                 iconName = isFocused ? "person" : "person-outline";
@@ -45,6 +50,12 @@ export const CustomTabBar = ({ state, descriptors, navigation }: any) => {
                     const isFocused = state.index === index;
 
                     const onPress = () => {
+                        // Auth guard for protected tabs
+                        if (PROTECTED_TABS.includes(route.name) && !token) {
+                            navigation.navigate("(auth)", { screen: "login" });
+                            return;
+                        }
+
                         const event = navigation.emit({
                             type: "tabPress",
                             target: route.name,

@@ -55,9 +55,10 @@ interface CustomHeaderProps {
     title: string;
     canGoBack?: boolean;
     rightElement?: React.ReactNode;
+    notificationCount?: number;
 }
 
-export const CustomHeader = ({ title, canGoBack = false, rightElement }: CustomHeaderProps) => {
+export const CustomHeader = ({ title, canGoBack = false, rightElement, notificationCount = 0 }: CustomHeaderProps) => {
     const insets = useSafeAreaInsets();
     const router = useRouter();
     const { user, logout } = useAuthStore();
@@ -134,9 +135,25 @@ export const CustomHeader = ({ title, canGoBack = false, rightElement }: CustomH
                         {title}
                     </Text>
 
-                    {/* Right */}
+                    {/* Right – notification bell + avatar (or custom element) */}
                     <View style={[styles.side, styles.rightSide]}>
-                        {rightElement ?? avatarButton}
+                        {rightElement ?? (
+                            <View style={styles.rightGroup}>
+                                {/* Notification Bell */}
+                                <TouchableOpacity style={styles.bellBtn} activeOpacity={0.75}>
+                                    <Ionicons name="notifications-outline" size={22} color="#ffffff" />
+                                    {notificationCount > 0 && (
+                                        <View style={styles.notifBadge}>
+                                            <Text style={styles.notifBadgeText}>
+                                                {notificationCount > 9 ? "9+" : notificationCount}
+                                            </Text>
+                                        </View>
+                                    )}
+                                </TouchableOpacity>
+                                {/* Avatar */}
+                                {avatarButton}
+                            </View>
+                        )}
                     </View>
                 </View>
             </View>
@@ -515,5 +532,39 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontWeight: "600",
         color: PRIMARY,
+    },
+    // Notification bell + right group
+    rightGroup: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 8,
+    },
+    bellBtn: {
+        width: 36,
+        height: 36,
+        borderRadius: 12,
+        backgroundColor: "rgba(255,255,255,0.15)",
+        alignItems: "center",
+        justifyContent: "center",
+        position: "relative",
+    },
+    notifBadge: {
+        position: "absolute",
+        top: -3,
+        right: -3,
+        minWidth: 16,
+        height: 16,
+        borderRadius: 8,
+        backgroundColor: "#2b3445",
+        alignItems: "center",
+        justifyContent: "center",
+        paddingHorizontal: 3,
+        borderWidth: 1.5,
+        borderColor: PRIMARY,
+    },
+    notifBadgeText: {
+        fontSize: 9,
+        fontWeight: "700",
+        color: "#ffffff",
     },
 });
