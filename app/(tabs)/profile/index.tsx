@@ -59,6 +59,12 @@ export default function ProfileScreen() {
                 <View className="mt-6">
                     <Text variant="caption" className="px-6 mb-2 uppercase font-bold text-text-accent">Account Settings</Text>
                     <MenuItem
+                        icon="heart-outline"
+                        title="My Wishlist"
+                        subtitle="View your saved products"
+                        onPress={() => router.push("/profile/wishlist")}
+                    />
+                    <MenuItem
                         icon="person-outline"
                         title="Personal Information"
                         subtitle="Update your profile details"
