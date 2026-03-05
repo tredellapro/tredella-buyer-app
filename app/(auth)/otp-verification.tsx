@@ -12,7 +12,7 @@ import AuthLayoutWrapper from "@/components/layout/AuthLayoutWrapper";
 
 export default function OTPVerificationScreen() {
     const router = useRouter();
-    const { email } = useLocalSearchParams<{ email: string }>();
+    const { email, purpose = "password_reset" } = useLocalSearchParams<{ email: string; purpose: string }>();
     const [otp, setOtp] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [timer, setTimer] = useState(0);
@@ -89,23 +89,37 @@ export default function OTPVerificationScreen() {
 
         setIsLoading(true);
         try {
-            const response = await authService.verifyOtp({
-                email: email!,
-                otp,
-                purpose: "password_reset",
-            });
+            let response;
+            if (purpose === "email_verification") {
+                response = await authService.verifyEmailOtp({
+                    email: email!,
+                    otp,
+                    purpose: "email_verification",
+                });
+            } else {
+                response = await authService.verifyOtp({
+                    email: email!,
+                    otp,
+                    purpose: "password_reset",
+                });
+            }
 
             if (response.success) {
                 await AsyncStorage.removeItem(TIMER_STORAGE_KEY);
                 Toast.show({
                     type: "success",
-                    text1: "OTP Verified",
-                    text2: "You can now reset your password",
+                    text1: "Verification Successful",
+                    text2: (response.data as any)?.message || "Your email has been verified",
                 });
-                router.push({
-                    pathname: "/(auth)/reset-password",
-                    params: { resetToken: response.data.resetToken }
-                });
+
+                if (purpose === "email_verification") {
+                    router.replace("/(tabs)");
+                } else {
+                    router.push({
+                        pathname: "/(auth)/reset-password",
+                        params: { resetToken: (response.data as any).resetToken }
+                    });
+                }
             }
         } catch (error: any) {
             // Handled by interceptor
@@ -121,7 +135,7 @@ export default function OTPVerificationScreen() {
         try {
             const response = await authService.resendOtp({
                 email: email!,
-                purpose: "password_reset",
+                purpose: purpose!,
             });
 
             if (response.success) {

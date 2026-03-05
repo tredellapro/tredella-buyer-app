@@ -41,9 +41,20 @@ export default function LoginScreen() {
                     text2: `Welcome back, ${response.data.user.firstName}!`,
                 });
                 router.replace("/(tabs)");
+            } else if (response.message === "Please verify your email before logging in") {
+                router.push({
+                    pathname: "/(auth)/otp-verification",
+                    params: { email: data.email, purpose: "email_verification" }
+                });
             }
         } catch (error: any) {
-            // Error is already handled by interceptor but we stop loading
+            const errorMessage = error.response?.data?.message || error.message || "";
+            if (errorMessage === "Please verify your email before logging in") {
+                router.push({
+                    pathname: "/(auth)/otp-verification",
+                    params: { email: data.email, purpose: "email_verification" }
+                });
+            }
         } finally {
             setIsLoading(false);
         }

@@ -56,15 +56,22 @@ apiClient.interceptors.response.use(
     }
 
     if (status === 401) {
-      // 1. Handle specific error messages that shouldn't trigger auto-logout
-      if (
+      // 1. Handle specific account status error messages
+      const isAccountStatusError =
         errorMessage.includes("verify your email") ||
         errorMessage.includes("rejected") ||
         errorMessage.includes("suspended") ||
         errorMessage.includes("deactivated") ||
         errorMessage.includes("inactive") ||
-        errorMessage.includes("pending admin approval")
-      ) {
+        errorMessage.includes("pending admin approval");
+
+      if (isAccountStatusError) {
+        // For these specific errors, we show the message but don't trigger the generic logout/refresh
+        Toast.show({
+          type: "error",
+          text1: "Account Status",
+          text2: errorMessage,
+        });
         return Promise.reject(error);
       }
 

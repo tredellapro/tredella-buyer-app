@@ -14,6 +14,13 @@ export interface RegisterRequest {
   email: string;
   password?: string;
   confirmPassword?: string;
+  phone: string;
+  addressLine1: string;
+  addressLine2?: string;
+  country: string;
+  state: string;
+  city: string;
+  postalCode: string;
 }
 
 export interface AuthResponse {
@@ -38,6 +45,31 @@ export const authService = {
       "/auth/register",
       data,
     );
+    return response.data;
+  },
+
+  checkEmail: async (email: string) => {
+    const response = await apiClient.post<
+      ApiResponse<{ available: boolean; email: string; message: string }>
+    >("/auth/check-email", { email });
+    return response.data;
+  },
+
+  checkPhone: async (phone: string) => {
+    const response = await apiClient.post<
+      ApiResponse<{ available: boolean; phone: string; message: string }>
+    >("/auth/check-phone", { phone });
+    return response.data;
+  },
+
+  verifyEmailOtp: async (data: {
+    email: string;
+    otp: string;
+    purpose: string;
+  }) => {
+    const response = await apiClient.post<
+      ApiResponse<{ verified: boolean; message: string }>
+    >("/auth/verify-otp", data);
     return response.data;
   },
 
