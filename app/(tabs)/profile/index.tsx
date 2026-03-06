@@ -39,10 +39,10 @@ export default function ProfileScreen() {
                 {/* Header/User Info */}
                 <View className="bg-background-white p-6 items-center border-b border-border-light relative">
                     {/* Account Status Badge */}
-                    <View className="absolute top-6 left-6 flex-row items-center bg-green-50 px-3 py-1.5 rounded-full border border-green-200">
+                    <View className="absolute top-6 left-6 flex-row items-center bg-primary px-3 py-1.5 rounded-full border border-border-light">
                         <View className="w-2 h-2 rounded-full bg-green-500 mr-2" />
-                        <Text variant="caption" className="font-bold text-green-700 uppercase tracking-wider">
-                            {user?.status ?? "Active"}
+                        <Text variant="caption" className="font-bold text-white uppercase tracking-wider">
+                            {user?.status ?? "N/A"}
                         </Text>
                     </View>
 
@@ -58,17 +58,18 @@ export default function ProfileScreen() {
                 {/* Account Settings */}
                 <View className="mt-6">
                     <Text variant="caption" className="px-6 mb-2 uppercase font-bold text-text-accent">Account Settings</Text>
-                    <MenuItem
-                        icon="heart-outline"
-                        title="My Wishlist"
-                        subtitle="View your saved products"
-                        onPress={() => router.push("/profile/wishlist")}
-                    />
+
                     <MenuItem
                         icon="person-outline"
                         title="Personal Information"
                         subtitle="Update your profile details"
                         onPress={() => router.push("/profile/personal-information")}
+                    />
+                    <MenuItem
+                        icon="heart-outline"
+                        title="My Wishlist"
+                        subtitle="View your saved products"
+                        onPress={() => router.push("/profile/wishlist")}
                     />
                     <MenuItem
                         icon="location-outline"

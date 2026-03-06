@@ -1,10 +1,22 @@
 export interface Product {
   id: string;
-  name: string;
-  description: string;
-  price: number;
-  image: string;
+  title: string;
+  brand: string;
+  description?: string;
+  imageUrl: string;
   category: string;
+  retailPrice: number;
+  wholesalePrice?: number;
+  wholesaleMoq?: number;
+  wholesale?: {
+    moq: number;
+    tiers: { min: number; max: number | string; price: number }[];
+  };
+  rating?: number;
+  reviewCount?: number;
+  stockStatus?: "in_stock" | "out_of_stock" | "low_stock";
+  discountBadge?: string;
+  colors?: string[];
 }
 
 export interface User {

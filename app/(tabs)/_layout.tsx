@@ -44,6 +44,7 @@ export default function TabLayout() {
                 name="cart"
                 options={{
                     title: "Cart",
+                    headerShown: false,
                 }}
             />
             <Tabs.Screen

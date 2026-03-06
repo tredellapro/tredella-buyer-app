@@ -19,6 +19,9 @@ export default function ProfileLayout() {
             <Stack.Screen name="personal-information" options={{ title: "Personal Information" }} />
             <Stack.Screen name="shipping-address" options={{ title: "Shipping Address" }} />
             <Stack.Screen name="payment-methods" options={{ title: "Payment Methods" }} />
+            <Stack.Screen name="wishlist" options={{
+                title: "My Wishlist ll", headerShown: false
+            }} />
         </Stack>
     );
 }
