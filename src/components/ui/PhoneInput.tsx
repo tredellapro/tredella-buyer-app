@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Text } from "./Text";
-import { Modal } from "./Modal";
+import { CustomModal } from "./CustomModal";
 import { Input } from "./Input";
 import { Country } from "@/api/locationService";
 
@@ -159,7 +159,7 @@ export const PhoneInput = ({
             )}
 
             {/* Country Selection Modal */}
-            <Modal
+            <CustomModal
                 isVisible={modalVisible}
                 onClose={() => setModalVisible(false)}
                 title="Select Country"
@@ -200,7 +200,7 @@ export const PhoneInput = ({
                     maxToRenderPerBatch={10}
                     windowSize={5}
                 />
-            </Modal>
+            </CustomModal>
         </View>
     );
 };

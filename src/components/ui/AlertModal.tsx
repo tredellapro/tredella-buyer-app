@@ -1,7 +1,7 @@
 import React from "react";
 import { View, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Modal } from "./Modal";
+import { CustomModal } from "./CustomModal";
 import { Text } from "./Text";
 import { Button } from "./Button";
 
@@ -51,7 +51,7 @@ export const AlertModal = ({
     };
 
     return (
-        <Modal isVisible={isVisible} onClose={onClose} type="center" showCloseButton={false}>
+        <CustomModal isVisible={isVisible} onClose={onClose} type="center" showCloseButton={false}>
             <View className="p-6 items-center">
                 <View className="mb-4">
                     <Ionicons name={icon.name as any} size={60} color={icon.color} />
@@ -85,6 +85,6 @@ export const AlertModal = ({
                     </View>
                 </View>
             </View>
-        </Modal>
+        </CustomModal>
     );
 };

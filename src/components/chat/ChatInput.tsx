@@ -76,7 +76,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSend, isAdminAutoReply }
     };
 
     return (
-        <View className="bg-background-white border-t border-border-light px-4 py-3 pb-safe " >
+        <View className="bg-background-white border-t border-border-light px-4 py-3 pb-safe" >
             <View className="flex-row items-end">
                 <TouchableOpacity
                     onPress={handleAttachment}
@@ -84,7 +84,6 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSend, isAdminAutoReply }
                 >
                     <Ionicons name="add" size={28} color="#e94560" />
                 </TouchableOpacity>
-
                 <View className="flex-1">
                     <TextInput
                         value={message}
@@ -96,7 +95,6 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSend, isAdminAutoReply }
                         style={{ paddingTop: 12, paddingBottom: 12 }}
                     />
                 </View>
-
                 <TouchableOpacity
                     onPress={handleSend}
                     disabled={!message.trim()}

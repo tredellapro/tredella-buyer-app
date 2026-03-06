@@ -21,7 +21,7 @@ interface Props {
     showCloseButton?: boolean;
 }
 
-export const Modal = ({
+export const CustomModal = ({
     isVisible,
     onClose,
     title,

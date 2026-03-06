@@ -6,6 +6,8 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "types": ["nativewind/types"]
-  }
+    "types": ["nativewind/types"],
+    "skipLibCheck": true
+  },
+  "exclude": ["node_modules"]
 }

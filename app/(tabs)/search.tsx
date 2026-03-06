@@ -4,7 +4,6 @@ import {
     TextInput,
     TouchableOpacity,
     FlatList,
-    Modal,
     Platform,
     ScrollView,
 } from "react-native";
@@ -13,6 +12,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Text } from "@/components/ui/Text";
 import { ProductCard } from "@/components/store/ProductCard";
 import { CustomHeader } from "@/components/layout/CustomHeader";
+import { CustomModal } from "@/components/ui/CustomModal";
 
 // Mock Data
 const CATEGORIES = ["All Categories", "Electronics", "Fashion", "Home & Garden", "Automotive", "Sports"];
@@ -135,156 +135,135 @@ export default function SearchScreen() {
     );
 
     const renderCategoryModal = () => (
-        <Modal
-            visible={isCategoryVisible}
-            animationType="slide"
-            transparent={true}
-            onRequestClose={() => setIsCategoryVisible(false)}
+        <CustomModal
+            isVisible={isCategoryVisible}
+            onClose={() => setIsCategoryVisible(false)}
+            title="Select Category"
+            maxHeight="h-[60%]"
         >
-            <View className="flex-1 bg-black/50 justify-end">
-                <View className="bg-background-white rounded-t-3xl min-h-[50%] p-6">
-                    <View className="flex-row items-center justify-between mb-6">
-                        <Text variant="h2" className="text-text-dark font-bold">Select Category</Text>
-                        <TouchableOpacity onPress={() => setIsCategoryVisible(false)} className="bg-background-light p-2 rounded-full">
-                            <Ionicons name="close" size={20} color="#697282" />
-                        </TouchableOpacity>
-                    </View>
-                    <ScrollView showsVerticalScrollIndicator={false}>
-                        {CATEGORIES.map((cat) => (
-                            <TouchableOpacity
-                                key={cat}
-                                onPress={() => {
-                                    setSelectedCategory(cat);
-                                    setIsCategoryVisible(false);
-                                }}
-                                className={`flex-row items-center justify-between py-4 border-b border-border-light ${selectedCategory === cat ? "bg-primary/5 rounded-lg px-4 border-b-0 mb-1" : ""}`}
-                            >
-                                <Text
-                                    variant="body"
-                                    className={`text-[16px] ${selectedCategory === cat ? "text-primary font-bold" : "text-text-dark"}`}
-                                >
-                                    {cat}
-                                </Text>
-                                {selectedCategory === cat && (
-                                    <Ionicons name="checkmark-circle" size={22} color="#e94560" />
-                                )}
-                            </TouchableOpacity>
-                        ))}
-                    </ScrollView>
-                </View>
-            </View>
-        </Modal>
+            <ScrollView showsVerticalScrollIndicator={false} className="px-6">
+                {CATEGORIES.map((cat) => (
+                    <TouchableOpacity
+                        key={cat}
+                        onPress={() => {
+                            setSelectedCategory(cat);
+                            setIsCategoryVisible(false);
+                        }}
+                        className={`flex-row items-center justify-between py-4 border-b border-border-light ${selectedCategory === cat ? "bg-primary/5 rounded-lg px-4 border-b-0 mb-1" : ""}`}
+                    >
+                        <Text
+                            variant="body"
+                            className={`text-[16px] ${selectedCategory === cat ? "text-primary font-bold" : "text-text-dark"}`}
+                        >
+                            {cat}
+                        </Text>
+                        {selectedCategory === cat && (
+                            <Ionicons name="checkmark-circle" size={22} color="#e94560" />
+                        )}
+                    </TouchableOpacity>
+                ))}
+            </ScrollView>
+        </CustomModal>
     );
 
     const renderFilterModal = () => (
-        <Modal
-            visible={isFilterVisible}
-            animationType="slide"
-            transparent={true}
-            onRequestClose={() => setIsFilterVisible(false)}
+        <CustomModal
+            isVisible={isFilterVisible}
+            onClose={() => setIsFilterVisible(false)}
+            title="Filters"
         >
-            <View className="flex-1 bg-black/50 justify-end">
-                <View className="bg-background-white rounded-t-3xl h-[85%]">
-                    {/* Header */}
-                    <View className="flex-row items-center justify-between p-6 border-b border-border-light">
-                        <Text variant="h2" className="text-text-dark font-bold">Filters</Text>
-                        <TouchableOpacity onPress={() => setIsFilterVisible(false)} className="bg-background-light p-2 rounded-full">
-                            <Ionicons name="close" size={20} color="#697282" />
-                        </TouchableOpacity>
+            <View className="flex-1">
+                <ScrollView className="px-6 py-4" showsVerticalScrollIndicator={false}>
+                    {/* Price Range */}
+                    <Text variant="h3" className="text-text-dark font-bold mb-4">Price Range</Text>
+                    <View className="flex-row items-center justify-between mb-8">
+                        <View className="flex-1 bg-background-light rounded-xl flex-row items-center px-4 h-12 border border-border-light">
+                            <Text className="text-text-accent mr-1">$</Text>
+                            <TextInput
+                                className="flex-1 text-[15px] text-text-dark outline-none"
+                                placeholder="Min"
+                                keyboardType="numeric"
+                                value={minPrice}
+                                onChangeText={setMinPrice}
+                            />
+                        </View>
+                        <View className="w-4 h-[1px] bg-border-light mx-4" />
+                        <View className="flex-1 bg-background-light rounded-xl flex-row items-center px-4 h-12 border border-border-light">
+                            <Text className="text-text-accent mr-1">$</Text>
+                            <TextInput
+                                className="flex-1 text-[15px] text-text-dark outline-none"
+                                placeholder="Max"
+                                keyboardType="numeric"
+                                value={maxPrice}
+                                onChangeText={setMaxPrice}
+                            />
+                        </View>
                     </View>
 
-                    <ScrollView className="p-6" showsVerticalScrollIndicator={false}>
-                        {/* Price Range */}
-                        <Text variant="h3" className="text-text-dark font-bold mb-4">Price Range</Text>
-                        <View className="flex-row items-center justify-between mb-8">
-                            <View className="flex-1 bg-background-light rounded-xl flex-row items-center px-4 h-12 border border-border-light">
-                                <Text className="text-text-accent mr-1">$</Text>
-                                <TextInput
-                                    className="flex-1 text-[15px] text-text-dark outline-none"
-                                    placeholder="Min"
-                                    keyboardType="numeric"
-                                    value={minPrice}
-                                    onChangeText={setMinPrice}
-                                />
-                            </View>
-                            <View className="w-4 h-[1px] bg-border-light mx-4" />
-                            <View className="flex-1 bg-background-light rounded-xl flex-row items-center px-4 h-12 border border-border-light">
-                                <Text className="text-text-accent mr-1">$</Text>
-                                <TextInput
-                                    className="flex-1 text-[15px] text-text-dark outline-none"
-                                    placeholder="Max"
-                                    keyboardType="numeric"
-                                    value={maxPrice}
-                                    onChangeText={setMaxPrice}
-                                />
-                            </View>
-                        </View>
-
-                        {/* Brands */}
-                        <Text variant="h3" className="text-text-dark font-bold mb-4">Brands</Text>
-                        <View className="flex-row flex-wrap gap-3 mb-8">
-                            {BRANDS.map((brand) => (
-                                <TouchableOpacity
-                                    key={brand}
-                                    onPress={() => setSelectedBrand(brand === selectedBrand ? "" : brand)}
-                                    className={`px-4 py-2 rounded-full border ${selectedBrand === brand ? "bg-primary border-primary" : "bg-white border-border-light"}`}
-                                >
-                                    <Text className={`font-medium ${selectedBrand === brand ? "text-white" : "text-text-dark"}`}>
-                                        {brand}
-                                    </Text>
-                                </TouchableOpacity>
-                            ))}
-                        </View>
-
-                        {/* Ratings */}
-                        <Text variant="h3" className="text-text-dark font-bold mb-4">Minimum Rating</Text>
-                        <View className="flex-row items-center justify-between bg-background-light p-4 rounded-2xl mb-8">
-                            {[1, 2, 3, 4, 5].map((star) => (
-                                <TouchableOpacity
-                                    key={star}
-                                    onPress={() => setSelectedRating(star)}
-                                    className="items-center"
-                                >
-                                    <View className={`w-12 h-12 rounded-full items-center justify-center mb-1 ${selectedRating >= star ? "bg-[#f59e0b]/10" : "bg-white"}`}>
-                                        <Ionicons
-                                            name={selectedRating >= star ? "star" : "star-outline"}
-                                            size={24}
-                                            color={selectedRating >= star ? "#f59e0b" : "#ccd3e1"}
-                                        />
-                                    </View>
-                                    <Text variant="caption" className="text-text-accent font-medium">{star}+</Text>
-                                </TouchableOpacity>
-                            ))}
-                        </View>
-
-                        <View className="h-10" />
-                    </ScrollView>
-
-                    {/* Footer Buttons */}
-                    <View className="p-4 border-t border-border-light flex-row gap-4 bg-white pb-safe">
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            onPress={() => {
-                                setMinPrice("");
-                                setMaxPrice("");
-                                setSelectedBrand("");
-                                setSelectedRating(0);
-                            }}
-                            className="flex-1 h-14 rounded-xl border border-border-light items-center justify-center bg-background-light"
-                        >
-                            <Text variant="body" className="text-text-dark font-bold">Reset</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            onPress={() => setIsFilterVisible(false)}
-                            className="flex-1 h-14 rounded-xl items-center justify-center bg-primary"
-                        >
-                            <Text variant="body" className="text-white font-bold">Apply Filters</Text>
-                        </TouchableOpacity>
+                    {/* Brands */}
+                    <Text variant="h3" className="text-text-dark font-bold mb-4">Brands</Text>
+                    <View className="flex-row flex-wrap gap-3 mb-8">
+                        {BRANDS.map((brand) => (
+                            <TouchableOpacity
+                                key={brand}
+                                onPress={() => setSelectedBrand(brand === selectedBrand ? "" : brand)}
+                                className={`px-4 py-2 rounded-full border ${selectedBrand === brand ? "bg-primary border-primary" : "bg-white border-border-light"}`}
+                            >
+                                <Text className={`font-medium ${selectedBrand === brand ? "text-white" : "text-text-dark"}`}>
+                                    {brand}
+                                </Text>
+                            </TouchableOpacity>
+                        ))}
                     </View>
+
+                    {/* Ratings */}
+                    <Text variant="h3" className="text-text-dark font-bold mb-4">Minimum Rating</Text>
+                    <View className="flex-row items-center justify-between bg-background-light p-4 rounded-2xl mb-8">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                            <TouchableOpacity
+                                key={star}
+                                onPress={() => setSelectedRating(star)}
+                                className="items-center"
+                            >
+                                <View className={`w-12 h-12 rounded-full items-center justify-center mb-1 ${selectedRating >= star ? "bg-[#f59e0b]/10" : "bg-white"}`}>
+                                    <Ionicons
+                                        name={selectedRating >= star ? "star" : "star-outline"}
+                                        size={24}
+                                        color={selectedRating >= star ? "#f59e0b" : "#ccd3e1"}
+                                    />
+                                </View>
+                                <Text variant="caption" className="text-text-accent font-medium">{star}+</Text>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
+
+                    <View className="h-20" />
+                </ScrollView>
+
+                {/* Footer Buttons */}
+                <View className="p-4 border-t border-border-light flex-row gap-4 bg-white">
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        onPress={() => {
+                            setMinPrice("");
+                            setMaxPrice("");
+                            setSelectedBrand("");
+                            setSelectedRating(0);
+                        }}
+                        className="flex-1 h-14 rounded-xl border border-border-light items-center justify-center bg-background-light"
+                    >
+                        <Text variant="body" className="text-text-dark font-bold">Reset</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        onPress={() => setIsFilterVisible(false)}
+                        className="flex-1 h-14 rounded-xl items-center justify-center bg-primary"
+                    >
+                        <Text variant="body" className="text-white font-bold">Apply Filters</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
-        </Modal>
+        </CustomModal>
     );
 
     return (

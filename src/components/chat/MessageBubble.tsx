@@ -46,30 +46,23 @@ export const MessageBubble: React.FC<MessageProps> = ({
     return (
         <View className={`w-full mb-4 px-4 ${isSentByMe ? "items-end" : "items-start"}`}>
             <View className={`flex-row items-end max-w-[85%] ${!isSentByMe ? "shrink" : ""}`}>
-
-                {/* Avatar for received messages */}
-                {!isSentByMe && (
+                {!isSentByMe ? (
                     <View className="w-8 h-8 rounded-full bg-primary items-center justify-center mr-2 mb-1">
                         <Ionicons name="headset-outline" size={16} color="#ffffff" />
                     </View>
-                )}
-
-                {/* Bubble Container */}
+                ) : null}
                 <View
                     className={`shrink rounded-2xl px-4 py-3 ${isSentByMe
                         ? "bg-primary rounded-br-sm"
                         : "bg-background-white border border-border rounded-bl-sm"
                         }`}
                 >
-                    {/* Attachment: Image */}
-                    {imageUrl && (
+                    {imageUrl ? (
                         <View className="w-48 h-48 rounded-xl overflow-hidden mb-2 bg-background-light">
                             <Image source={{ uri: imageUrl }} className="w-full h-full" resizeMode="cover" />
                         </View>
-                    )}
-
-                    {/* Attachment: Document */}
-                    {fileName && (
+                    ) : null}
+                    {fileName ? (
                         <TouchableOpacity
                             onPress={handleFileOpen}
                             activeOpacity={0.7}
@@ -88,19 +81,15 @@ export const MessageBubble: React.FC<MessageProps> = ({
                                 </Text>
                             </View>
                         </TouchableOpacity>
-                    )}
-
-                    {/* Text Message */}
-                    {!!text && (
+                    ) : null}
+                    {!!text ? (
                         <Text
                             variant="body"
                             className={`text-[15px] leading-6 ${isSentByMe ? "text-white" : "text-text-dark"}`}
                         >
                             {text}
                         </Text>
-                    )}
-
-                    {/* Timestamp */}
+                    ) : null}
                     <Text
                         variant="caption"
                         className={`text-[10px] self-end mt-1 ${isSentByMe ? "text-white/70" : "text-text-accent"}`}

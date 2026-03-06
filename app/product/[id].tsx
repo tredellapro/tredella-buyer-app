@@ -6,6 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Text } from "@/components/ui/Text";
 import { Button } from "@/components/ui/Button";
 import { useViewModeStore } from "@/store/viewModeStore";
+import { CustomModal } from "@/components/ui/CustomModal";
 
 const { width } = Dimensions.get("window");
 
@@ -21,6 +22,8 @@ const PRODUCT_DATA = {
         "https://images.unsplash.com/photo-1546435770-a3e426fa4b8da?auto=format&fit=crop&q=80&w=800",
         "https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&q=80&w=800"
     ],
+    discountBadge: "15% OFF",
+    stockStatus: "in_stock",
     rating: 4.8,
     reviewCount: 1245,
     retailPrice: 249.99,
@@ -67,6 +70,7 @@ export default function ProductDetailScreen() {
     const [quantity, setQuantity] = useState(isWholesale ? PRODUCT_DATA.wholesale.moq.toString() : "1");
     const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(true);
     const [isSpecsExpanded, setIsSpecsExpanded] = useState(false);
+    const [isOffersVisible, setIsOffersVisible] = useState(false);
 
     const handleScroll = (event: any) => {
         const slideSize = event.nativeEvent.layoutMeasurement.width;
@@ -80,10 +84,73 @@ export default function ProductDetailScreen() {
         setQuantity(numeric);
     };
 
+    const renderOffersModal = () => (
+        <CustomModal
+            isVisible={isOffersVisible}
+            onClose={() => setIsOffersVisible(false)}
+            title="Other Offers"
+        >
+            <ScrollView className="p-6">
+                <Text variant="caption" className="text-text-accent mb-4">2 other sellers offering this item</Text>
+
+                <View className="bg-white p-4 rounded-2xl border border-border-light mb-4 shadow-sm shadow-black/5">
+                    <View className="flex-row items-center justify-between mb-3">
+                        <View className="flex-row items-center">
+                            <View className="w-10 h-10 bg-background-light rounded-full items-center justify-center border border-border-light">
+                                <Ionicons name="storefront" size={16} color="#697282" />
+                            </View>
+                            <View className="ml-3">
+                                <Text variant="body" className="font-bold text-text-dark">Global Imports Ltd.</Text>
+                                <View className="flex-row items-center mt-0.5">
+                                    <Ionicons name="star" size={12} color="#f59e0b" />
+                                    <Text variant="caption" className="text-text-accent ml-1 text-[11px]">4.7 • 89K Followers</Text>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                    <View className="flex-row items-end justify-between border-t border-border-light pt-3">
+                        <View>
+                            <Text variant="h2" className="text-primary font-bold">${(PRODUCT_DATA.retailPrice - 10).toFixed(2)}</Text>
+                            <Text variant="caption" className="text-text-accent text-[11px] mt-0.5">Free Shipping</Text>
+                        </View>
+                        <TouchableOpacity className="bg-text-dark px-4 py-2 rounded-lg" onPress={() => setIsOffersVisible(false)}>
+                            <Text variant="body" className="text-white font-bold">Select Offer</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+
+                <View className="bg-white p-4 rounded-2xl border border-border-light mb-4 shadow-sm shadow-black/5">
+                    <View className="flex-row items-center justify-between mb-3">
+                        <View className="flex-row items-center">
+                            <View className="w-10 h-10 bg-background-light rounded-full items-center justify-center border border-border-light">
+                                <Ionicons name="storefront" size={16} color="#697282" />
+                            </View>
+                            <View className="ml-3">
+                                <Text variant="body" className="font-bold text-text-dark">Electro World</Text>
+                                <View className="flex-row items-center mt-0.5">
+                                    <Ionicons name="star" size={12} color="#f59e0b" />
+                                    <Text variant="caption" className="text-text-accent ml-1 text-[11px]">4.5 • 12K Followers</Text>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                    <View className="flex-row items-end justify-between border-t border-border-light pt-3">
+                        <View>
+                            <Text variant="h2" className="text-primary font-bold">${(PRODUCT_DATA.retailPrice + 5).toFixed(2)}</Text>
+                            <Text variant="caption" className="text-text-accent text-[11px] mt-0.5">$5.00 Shipping</Text>
+                        </View>
+                        <TouchableOpacity className="bg-background-light border border-border-light px-4 py-2 rounded-lg" onPress={() => setIsOffersVisible(false)}>
+                            <Text variant="body" className="text-text-dark font-bold">Select Offer</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </ScrollView>
+        </CustomModal>
+    );
+
     return (
         <View className="flex-1 bg-background-light">
             <ScrollView className="flex-1" showsVerticalScrollIndicator={false} bounces={false}>
-                {/* Image Carousel */}
                 <View className="w-full bg-white relative">
                     <ScrollView
                         horizontal
@@ -102,55 +169,57 @@ export default function ProductDetailScreen() {
                             />
                         ))}
                     </ScrollView>
-
-                    {/* Custom Header Actions overlaid on image */}
-                    <SafeAreaView edges={["top"]} className="absolute top-0 w-full flex-row justify-between px-4 pt-4">
-                        <TouchableOpacity
-                            onPress={() => router.back()}
-                            className="w-10 h-10 bg-white/80 rounded-full items-center justify-center backdrop-blur-md shadow-sm"
-                        >
-                            <Ionicons name="arrow-back" size={24} color="#2b3445" />
-                        </TouchableOpacity>
-                        <View className="flex-row gap-2">
-                            <TouchableOpacity className="w-10 h-10 bg-white/80 rounded-full items-center justify-center backdrop-blur-md shadow-sm">
-                                <Ionicons name="share-outline" size={22} color="#2b3445" />
+                    <SafeAreaView edges={["top"]} className="absolute top-0 w-full">
+                        <View className="flex-row gap-1 p-4 w-full justify-between">
+                            <TouchableOpacity
+                                onPress={() => router.canGoBack() ? router.back() : router.replace("/")}
+                                className="w-10 h-10 bg-white/80 rounded-full items-center justify-center backdrop-blur-md shadow-sm"
+                            >
+                                <Ionicons name="arrow-back" size={24} color="#2b3445" />
                             </TouchableOpacity>
-                            <TouchableOpacity className="w-10 h-10 bg-white/80 rounded-full items-center justify-center backdrop-blur-md shadow-sm">
-                                <Ionicons name="heart-outline" size={22} color="#2b3445" />
-                            </TouchableOpacity>
+                            <View className="flex-row gap-2">
+                                <TouchableOpacity className="w-10 h-10 bg-white/80 rounded-full items-center justify-center backdrop-blur-md shadow-sm">
+                                    <Ionicons name="share-outline" size={22} color="#2b3445" />
+                                </TouchableOpacity>
+                                <TouchableOpacity className="w-10 h-10 bg-white/80 rounded-full items-center justify-center backdrop-blur-md shadow-sm">
+                                    <Ionicons name="heart-outline" size={22} color="#2b3445" />
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     </SafeAreaView>
-
-                    {/* Pagination Dots */}
-                    <View className="absolute bottom-4 w-full flex-row justify-center gap-2">
-                        {PRODUCT_DATA.images.map((_, i) => (
-                            <View
-                                key={i}
-                                className={`h-2 rounded-full ${activeImageIndex === i ? "w-6 bg-primary" : "w-2 bg-white/60"}`}
-                            />
-                        ))}
+                    <View className="absolute bottom-10 left-4 items-start gap-1.5">
+                        {PRODUCT_DATA.discountBadge ? (
+                            <View className="bg-primary px-3 py-1 rounded-md shadow-sm opacity-95">
+                                <Text variant="caption" className="text-white font-bold tracking-wider">{PRODUCT_DATA.discountBadge}</Text>
+                            </View>
+                        ) : null}
+                        {PRODUCT_DATA.stockStatus === "in_stock" ? (
+                            <View className="bg-[#10b981]/90 px-3 py-1 rounded-md shadow-sm backdrop-blur-sm">
+                                <Text variant="caption" className="text-white font-bold shadow-sm">In Stock</Text>
+                            </View>
+                        ) : null}
+                        {PRODUCT_DATA.stockStatus === "out_of_stock" ? (
+                            <View className="bg-[#2b3445]/90 px-3 py-1 rounded-md shadow-sm backdrop-blur-sm">
+                                <Text variant="caption" className="text-white font-bold opacity-90 shadow-sm">Out of Stock</Text>
+                            </View>
+                        ) : null}
                     </View>
                 </View>
-
-                {/* Primary Info */}
-                <View className="bg-white p-5 mb-2">
-                    <View className="flex-row items-center justify-between mb-2">
-                        <Text variant="caption" className="text-text-accent font-medium uppercase tracking-wider">
+                <View className="bg-white px-5 py-4 pt-6 mb-2 rounded-b-3xl shadow-sm shadow-black/5">
+                    <View className="flex-row items-center justify-between mb-3">
+                        <Text variant="caption" className="text-text-accent font-bold uppercase tracking-wider text-[12px]">
                             {PRODUCT_DATA.brand}
                         </Text>
-                        <View className="flex-row items-center bg-[#f59e0b]/10 px-2 py-1 rounded-md">
+                        <View className="flex-row items-center bg-background-light px-2 py-1 rounded-lg border border-border-light">
                             <Ionicons name="star" size={14} color="#f59e0b" />
-                            <Text variant="caption" className="text-[#f59e0b] font-bold ml-1">
-                                {PRODUCT_DATA.rating} <Text className="text-text-accent font-normal">({PRODUCT_DATA.reviewCount})</Text>
+                            <Text variant="caption" className="text-text-dark font-bold ml-1.5 text-[12px]">
+                                {PRODUCT_DATA.rating} <Text className="text-text-accent font-normal tracking-tight">({PRODUCT_DATA.reviewCount})</Text>
                             </Text>
                         </View>
                     </View>
-
                     <Text variant="h2" className="text-text-dark font-bold leading-tight mb-4">
                         {PRODUCT_DATA.title}
                     </Text>
-
-                    {/* Pricing Block - Depends on Mode */}
                     {isWholesale ? (
                         <View className="bg-background-light p-4 rounded-xl border border-border-light mb-2">
                             <View className="flex-row items-center justify-between mb-3 border-b border-border-light pb-3">
@@ -163,7 +232,7 @@ export default function ProductDetailScreen() {
                                 {PRODUCT_DATA.wholesale.tiers.map((tier, i) => (
                                     <View key={i} className="items-center">
                                         <Text variant="caption" className="text-text-accent mb-1 text-[11px]">
-                                            {tier.max === "500+" ? `≥ ${tier.min}` : `${tier.min}-${tier.max}`} units
+                                            {tier.max === "500+" ? `>= ${tier.min}` : `${tier.min}-${tier.max}`} units
                                         </Text>
                                         <Text variant="h3" className="text-primary font-bold">
                                             ${tier.price.toFixed(2)}
@@ -183,8 +252,6 @@ export default function ProductDetailScreen() {
                         </View>
                     )}
                 </View>
-
-                {/* Variations */}
                 <View className="bg-white p-5 mb-2">
                     <Text variant="h3" className="text-text-dark font-bold mb-3">
                         Color: <Text className="text-text-accent font-normal">{selectedColor.name}</Text>
@@ -204,8 +271,6 @@ export default function ProductDetailScreen() {
                         ))}
                     </View>
                 </View>
-
-                {/* Seller Block */}
                 <View className="bg-white p-5 mb-2 flex-row items-center justify-between">
                     <View className="flex-row items-center flex-1">
                         <View className="w-12 h-12 bg-background-light rounded-full items-center justify-center border border-border-light">
@@ -230,8 +295,6 @@ export default function ProductDetailScreen() {
                         <Ionicons name="chatbubble-ellipses" size={20} color="#e94560" />
                     </TouchableOpacity>
                 </View>
-
-                {/* Details Accordions */}
                 <View className="bg-white px-5 py-2 mb-2">
                     <TouchableOpacity
                         className="py-4 flex-row justify-between items-center border-b border-border-light"
@@ -240,14 +303,13 @@ export default function ProductDetailScreen() {
                         <Text variant="h3" className="text-text-dark font-bold">Description</Text>
                         <Ionicons name={isDescriptionExpanded ? "chevron-up" : "chevron-down"} size={20} color="#697282" />
                     </TouchableOpacity>
-                    {isDescriptionExpanded && (
+                    {isDescriptionExpanded ? (
                         <View className="py-4">
                             <Text variant="body" className="text-text-accent leading-6">
                                 {PRODUCT_DATA.description}
                             </Text>
                         </View>
-                    )}
-
+                    ) : null}
                     <TouchableOpacity
                         className="py-4 flex-row justify-between items-center"
                         onPress={() => setIsSpecsExpanded(!isSpecsExpanded)}
@@ -255,7 +317,7 @@ export default function ProductDetailScreen() {
                         <Text variant="h3" className="text-text-dark font-bold">Specifications</Text>
                         <Ionicons name={isSpecsExpanded ? "chevron-up" : "chevron-down"} size={20} color="#697282" />
                     </TouchableOpacity>
-                    {isSpecsExpanded && (
+                    {isSpecsExpanded ? (
                         <View className="pb-4">
                             {PRODUCT_DATA.specs.map((spec, i) => (
                                 <View key={i} className={`flex-row justify-between py-3 ${i !== PRODUCT_DATA.specs.length - 1 ? "border-b border-border-light" : ""}`}>
@@ -264,10 +326,8 @@ export default function ProductDetailScreen() {
                                 </View>
                             ))}
                         </View>
-                    )}
+                    ) : null}
                 </View>
-
-                {/* Reviews */}
                 <View className="bg-white p-5 mb-[100px]">
                     <View className="flex-row items-center justify-between mb-6">
                         <Text variant="h3" className="text-text-dark font-bold">Customer Reviews</Text>
@@ -295,12 +355,19 @@ export default function ProductDetailScreen() {
                         </View>
                     ))}
                 </View>
+                <View className="h-6" />
             </ScrollView>
-
-            {/* Bottom Floating Action Bar */}
-            <View className="absolute bottom-0 w-full bg-white border-t border-border-light px-5 py-4 pb-safe flex-row items-center shadow-lg">
-                {/* Quantity Selector */}
-                <View className="flex-row items-center bg-background-light rounded-xl h-12 mr-4 border border-border-light px-1">
+            <TouchableOpacity
+                onPress={() => setIsOffersVisible(true)}
+                activeOpacity={0.9}
+                className="absolute right-4 bottom-[100px] bg-text-dark pl-3 pr-4 py-3 rounded-full flex-row items-center shadow-lg shadow-black/20"
+                style={{ zIndex: 50, elevation: 5 }}
+            >
+                <Ionicons name="layers-outline" size={20} color="#ffffff" />
+                <Text variant="body" className="text-white font-bold ml-2">See Offers</Text>
+            </TouchableOpacity>
+            <View className="absolute bottom-0 w-full bg-white border-t border-border-light px-4 py-3 pb-safe flex-row items-center z-40">
+                <View className="flex-row items-center bg-background-light rounded-xl h-[46px] mr-3 border border-border-light px-1">
                     <TouchableOpacity
                         onPress={() => setQuantity(prev => Math.max(isWholesale ? PRODUCT_DATA.wholesale.moq : 1, parseInt(prev) - 1).toString())}
                         className="w-10 h-10 items-center justify-center"
@@ -320,15 +387,15 @@ export default function ProductDetailScreen() {
                         <Ionicons name="add" size={20} color="#2b3445" />
                     </TouchableOpacity>
                 </View>
-
-                {/* Add to Cart Button */}
-                <Button
-                    title="Add to Cart"
-                    onPress={() => { }}
-                    className="flex-1 h-12"
-                    textClassName="font-bold text-[16px]"
-                />
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    className="flex-1 bg-primary h-[46px] rounded-xl flex-row items-center justify-center shadow-sm shadow-primary/20"
+                >
+                    <Ionicons name="cart-outline" size={20} color="#ffffff" className="mr-2" />
+                    <Text variant="body" className="text-white font-bold ml-2 text-[15px]">Add to Cart</Text>
+                </TouchableOpacity>
             </View>
+            {renderOffersModal()}
         </View>
     );
 }

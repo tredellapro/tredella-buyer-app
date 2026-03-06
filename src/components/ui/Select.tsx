@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 import { View, TouchableOpacity, FlatList } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Text } from "./Text";
-import { Modal as CustomModal } from "./Modal";
+import { CustomModal } from "./CustomModal";
 import { Input } from "./Input";
 
 interface Option {
