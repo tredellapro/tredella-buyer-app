@@ -54,7 +54,7 @@ export const CustomModal = ({
                                     {(title || showCloseButton) && (
                                         <View className="p-4 border-b border-border-secondary flex-row items-center justify-between">
                                             <View className="flex-1">
-                                                {title && <Text variant="h3" numberOfLines={1}>{title}</Text>}
+                                                {title && <Text variant="body" className="font-semibold" numberOfLines={1}>{title}</Text>}
                                             </View>
                                             {showCloseButton && (
                                                 <TouchableOpacity onPress={onClose} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>

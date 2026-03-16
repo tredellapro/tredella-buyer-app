@@ -15,7 +15,7 @@ import { CustomHeader } from "@/components/layout/CustomHeader";
 import { CustomModal } from "@/components/ui/CustomModal";
 
 // Mock Data
-const CATEGORIES = ["All Categories", "Electronics", "Fashion", "Home & Garden", "Automotive", "Sports"];
+const CATEGORIES = ["Electronics", "Fashion", "Home & Garden", "Automotive", "Sports"];
 const BRANDS = ["Apple", "Samsung", "Sony", "Dell", "HP", "Nike", "Adidas"];
 
 const MOCK_PRODUCTS: any[] = [
@@ -96,25 +96,26 @@ export default function SearchScreen() {
                 <TouchableOpacity
                     activeOpacity={0.7}
                     onPress={() => setIsCategoryVisible(true)}
-                    className="w-11 h-11 bg-white rounded-xl items-center justify-center mr-3 border border-border-light shadow-sm shadow-black/5"
+                    className="w-11 h-11 bg-white rounded-md items-center justify-center mr-2 border border-border-light shadow-sm shadow-black/5"
                 >
-                    <Ionicons name="grid-outline" size={20} color="#2b3445" />
+                    <Ionicons name="grid-outline" size={18} color="#2b3445" />
                 </TouchableOpacity>
 
                 {/* Search Bar */}
-                <View className="flex-1 bg-white rounded-xl flex-row items-center px-4 h-11 border border-border-light shadow-sm shadow-black/5">
-                    <Ionicons name="search" size={20} color="#697282" />
+                <View className="flex-1 bg-white rounded-md flex-row items-center px-3 h-11 border border-border-light shadow-sm shadow-black/5">
+                    <Ionicons name="search" size={16} color="#697282" />
                     <TextInput
-                        className="flex-1 ml-2 text-[15px] text-text-dark outline-none"
+                        className="flex-1 mx-1 text-[14px] text-text-dark outline-none"
                         placeholder="Search products..."
                         placeholderTextColor="#9ca3af"
                         value={searchQuery}
                         onChangeText={setSearchQuery}
                         returnKeyType="search"
+                        maxLength={100}
                     />
                     {searchQuery.length > 0 && (
                         <TouchableOpacity onPress={() => setSearchQuery("")}>
-                            <Ionicons name="close-circle" size={18} color="#ccd3e1" />
+                            <Ionicons name="close-circle" size={16} color="#ccd3e1" />
                         </TouchableOpacity>
                     )}
                 </View>
@@ -123,11 +124,11 @@ export default function SearchScreen() {
                 <TouchableOpacity
                     activeOpacity={0.7}
                     onPress={() => setIsFilterVisible(true)}
-                    className="w-11 h-11 bg-white rounded-xl items-center justify-center ml-3 relative border border-border-light shadow-sm shadow-black/5"
+                    className="w-11 h-11 bg-white rounded-md items-center justify-center ml-2 relative border border-border-light shadow-sm shadow-black/5"
                 >
-                    <Ionicons name="options-outline" size={22} color="#2b3445" />
+                    <Ionicons name="options-outline" size={20} color="#2b3445" />
                     {(selectedBrand || minPrice || selectedRating > 0) && (
-                        <View className="absolute top-2 right-2 w-2.5 h-2.5 bg-[#f59e0b] rounded-full border border-white" />
+                        <View className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-[#f59e0b] rounded-full border border-white" />
                     )}
                 </TouchableOpacity>
             </View>
@@ -139,9 +140,10 @@ export default function SearchScreen() {
             isVisible={isCategoryVisible}
             onClose={() => setIsCategoryVisible(false)}
             title="Select Category"
-            maxHeight="h-[60%]"
+            // maxHeight="h-[60%]"
+            type="center"
         >
-            <ScrollView showsVerticalScrollIndicator={false} className="px-6">
+            <ScrollView showsVerticalScrollIndicator={false} className="px-6 py-4">
                 {CATEGORIES.map((cat) => (
                     <TouchableOpacity
                         key={cat}
@@ -149,16 +151,16 @@ export default function SearchScreen() {
                             setSelectedCategory(cat);
                             setIsCategoryVisible(false);
                         }}
-                        className={`flex-row items-center justify-between py-4 border-b border-border-light ${selectedCategory === cat ? "bg-primary/5 rounded-lg px-4 border-b-0 mb-1" : ""}`}
+                        className={`flex-row items-center justify-between py-2 border-b border-border-light ${selectedCategory === cat ? "bg-primary/5 rounded-lg px-4 border-b-0 mb-1" : ""}`}
                     >
                         <Text
-                            variant="body"
-                            className={`text-[16px] ${selectedCategory === cat ? "text-primary font-bold" : "text-text-dark"}`}
+                            variant="caption"
+                            className={`text-[16px] ${selectedCategory === cat ? "text-primary font-medium" : "text-text-dark"}`}
                         >
                             {cat}
                         </Text>
                         {selectedCategory === cat && (
-                            <Ionicons name="checkmark-circle" size={22} color="#e94560" />
+                            <Ionicons name="checkmark-circle" size={18} color="#e94560" />
                         )}
                     </TouchableOpacity>
                 ))}
@@ -170,38 +172,42 @@ export default function SearchScreen() {
         <CustomModal
             isVisible={isFilterVisible}
             onClose={() => setIsFilterVisible(false)}
-            title="Filters"
+            title="Select Filters"
+
         >
             <View className="flex-1">
                 <ScrollView className="px-6 py-4" showsVerticalScrollIndicator={false}>
                     {/* Price Range */}
-                    <Text variant="h3" className="text-text-dark font-bold mb-4">Price Range</Text>
-                    <View className="flex-row items-center justify-between mb-8">
-                        <View className="flex-1 bg-background-light rounded-xl flex-row items-center px-4 h-12 border border-border-light">
+                    <Text variant="body" className="text-text-dark font-medium mb-2">Price Range :</Text>
+                    <View className="flex-row items-center justify-between mb-4">
+                        <View className="flex-1 bg-background-light rounded-md flex-row items-center px-4 h-10 border border-border-light ">
                             <Text className="text-text-accent mr-1">$</Text>
                             <TextInput
-                                className="flex-1 text-[15px] text-text-dark outline-none"
+                                className="flex-1 text-[12px] text-text-dark outline-none "
                                 placeholder="Min"
                                 keyboardType="numeric"
                                 value={minPrice}
                                 onChangeText={setMinPrice}
+                                maxLength={18}
                             />
                         </View>
-                        <View className="w-4 h-[1px] bg-border-light mx-4" />
-                        <View className="flex-1 bg-background-light rounded-xl flex-row items-center px-4 h-12 border border-border-light">
+                        <View className="w-2 h-[1px] bg-border-light " />
+                        <View className="flex-1 bg-background-light rounded-md flex-row items-center px-4 h-10 border border-border-light">
                             <Text className="text-text-accent mr-1">$</Text>
                             <TextInput
-                                className="flex-1 text-[15px] text-text-dark outline-none"
+                                className="flex-1 text-[12px] text-text-dark outline-none"
                                 placeholder="Max"
                                 keyboardType="numeric"
                                 value={maxPrice}
                                 onChangeText={setMaxPrice}
+                                maxLength={18}
                             />
                         </View>
                     </View>
 
+
                     {/* Brands */}
-                    <Text variant="h3" className="text-text-dark font-bold mb-4">Brands</Text>
+                    <Text variant="body" className="text-text-dark font-medium mb-4">Brands :</Text>
                     <View className="flex-row flex-wrap gap-3 mb-8">
                         {BRANDS.map((brand) => (
                             <TouchableOpacity
@@ -209,7 +215,7 @@ export default function SearchScreen() {
                                 onPress={() => setSelectedBrand(brand === selectedBrand ? "" : brand)}
                                 className={`px-4 py-2 rounded-full border ${selectedBrand === brand ? "bg-primary border-primary" : "bg-white border-border-light"}`}
                             >
-                                <Text className={`font-medium ${selectedBrand === brand ? "text-white" : "text-text-dark"}`}>
+                                <Text variant="caption" className={`font-medium ${selectedBrand === brand ? "text-white" : "text-text-dark"}`}>
                                     {brand}
                                 </Text>
                             </TouchableOpacity>
@@ -217,22 +223,22 @@ export default function SearchScreen() {
                     </View>
 
                     {/* Ratings */}
-                    <Text variant="h3" className="text-text-dark font-bold mb-4">Minimum Rating</Text>
-                    <View className="flex-row items-center justify-between bg-background-light p-4 rounded-2xl mb-8">
+                    <Text variant="body" className="text-text-dark font-medium mb-4">Rating :</Text>
+                    <View className="flex-row items-center justify-between bg-background-light py-2 px-4 rounded-xl mb-4">
                         {[1, 2, 3, 4, 5].map((star) => (
                             <TouchableOpacity
                                 key={star}
                                 onPress={() => setSelectedRating(star)}
                                 className="items-center"
                             >
-                                <View className={`w-12 h-12 rounded-full items-center justify-center mb-1 ${selectedRating >= star ? "bg-[#f59e0b]/10" : "bg-white"}`}>
+                                <View className={`w-10 h-10 rounded-full items-center justify-center  ${selectedRating >= star ? "bg-[#f59e0b]/10" : "bg-white"}`}>
                                     <Ionicons
                                         name={selectedRating >= star ? "star" : "star-outline"}
-                                        size={24}
+                                        size={18}
                                         color={selectedRating >= star ? "#f59e0b" : "#ccd3e1"}
                                     />
                                 </View>
-                                <Text variant="caption" className="text-text-accent font-medium">{star}+</Text>
+                                <Text variant="caption" className="text-text-accent font-medium mt-2">{star}</Text>
                             </TouchableOpacity>
                         ))}
                     </View>
@@ -250,16 +256,16 @@ export default function SearchScreen() {
                             setSelectedBrand("");
                             setSelectedRating(0);
                         }}
-                        className="flex-1 h-14 rounded-xl border border-border-light items-center justify-center bg-background-light"
+                        className="flex-1 h-10 rounded-md border border-border-light items-center justify-center bg-background-light"
                     >
-                        <Text variant="body" className="text-text-dark font-bold">Reset</Text>
+                        <Text variant="body" className="text-text-dark font-medium">Reset</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         activeOpacity={0.8}
                         onPress={() => setIsFilterVisible(false)}
-                        className="flex-1 h-14 rounded-xl items-center justify-center bg-primary"
+                        className="flex-1 h-10 rounded-md items-center justify-center bg-primary"
                     >
-                        <Text variant="body" className="text-white font-bold">Apply Filters</Text>
+                        <Text variant="body" className="text-white font-medium">Apply</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -268,18 +274,16 @@ export default function SearchScreen() {
 
     return (
         <View className="flex-1 bg-background-light">
-            <CustomHeader title="Search" />
-
             {renderSearchBar()}
 
             {/* Active Category Indicator */}
             {selectedCategory !== "All Categories" && (
                 <View className="px-4 py-3 bg-white border-b border-border-light flex-row items-center justify-between">
-                    <Text variant="body" className="text-text-dark font-medium">
-                        Category: <Text className="text-primary font-bold">{selectedCategory}</Text>
+                    <Text variant="caption" className="text-text-dark font-medium ml-2">
+                        {selectedCategory}
                     </Text>
                     <TouchableOpacity onPress={() => setSelectedCategory("All Categories")}>
-                        <Ionicons name="close-circle" size={20} color="#ccd3e1" />
+                        <Ionicons name="close-circle" size={18} color="#ccd3e1" />
                     </TouchableOpacity>
                 </View>
             )}

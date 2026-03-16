@@ -19,7 +19,7 @@ import { useViewModeStore, ViewMode } from "@/store/viewModeStore";
 const PRIMARY = "#e94560";
 const { width: SCREEN_W } = Dimensions.get("window");
 
-interface ModeOption {
+export interface ModeOption {
     key: ViewMode;
     label: string;
     description: string;
@@ -27,7 +27,7 @@ interface ModeOption {
     disabled: boolean;
 }
 
-const MODES: ModeOption[] = [
+export const MODES: ModeOption[] = [
     {
         key: "retail",
         label: "Retail",

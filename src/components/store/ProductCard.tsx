@@ -76,56 +76,61 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 <View className="absolute top-2 left-2 items-start gap-1">
                     {discountBadge && (
                         <View className="bg-primary px-2 py-0.5 rounded-sm shadow-sm opacity-95">
-                            <Text className="text-[10px] text-white font-bold tracking-wider">{discountBadge}</Text>
+                            <Text variant="caption" className="text-[10px]  text-white font-medium tracking-wider">{discountBadge}</Text>
                         </View>
                     )}
                     {stockStatus === "out_of_stock" && (
                         <View className="bg-[#2b3445]/90 px-2 py-0.5 rounded-sm shadow-sm backdrop-blur-sm">
-                            <Text className="text-[10px] text-white font-bold opacity-90">Out of Stock</Text>
+                            <Text variant="caption" className="text-[10px]  text-white font-medium opacity-90">Out of Stock</Text>
                         </View>
                     )}
                     {stockStatus === "low_stock" && (
                         <View className="bg-[#f59e0b]/90 px-2 py-0.5 rounded-sm shadow-sm backdrop-blur-sm">
-                            <Text className="text-[10px] text-white font-bold">Low Stock</Text>
+                            <Text variant="caption" className="text-[10px] text-white font-medium">Low Stock</Text>
                         </View>
                     )}
                 </View>
 
                 {/* Wholesale Badge MOQ */}
-                {isWholesale && (
+                {/* {isWholesale && (
                     <View className="absolute bottom-2 left-2 bg-secondary/90 px-2 py-1 rounded-md backdrop-blur-sm">
-                        <Text className="text-[10px] text-white font-bold leading-none">
+                        <Text variant="caption" className="text-[10px] text-white font-bold leading-none">
                             MOQ: {wholesaleMoq}
                         </Text>
                     </View>
-                )}
+                )} */}
             </View>
 
             {/* Product Info */}
             <View className="p-3">
-                <Text variant="caption" className="text-text-accent mb-1 font-medium" numberOfLines={1}>
-                    {brand}
-                </Text>
-                <Text variant="body" className="font-semibold text-text-dark leading-tight mb-1" numberOfLines={2}>
+                <View className="flex-row items-center justify-between gap-2 mb-2 ">
+                    <Text variant="caption" className="text-text-accent  font-medium leading-tight" numberOfLines={1}>
+                        {brand}
+                    </Text>
+
+                    {/* Rating */}
+                    <View className="flex-row items-center">
+                        <Ionicons name="star" size={12} color="#f59e0b" className="" />
+                        <Text variant="caption" className="text-text-dark font-medium ml-1 text-[12px]">
+                            {rating.toFixed(1)}
+                        </Text>
+                        {/* <Text variant="caption" className="text-text-accent ml-1 text-[11px]">
+                            ({formatReviewCount(reviewCount)})
+                        </Text> */}
+                    </View>
+                </View>
+
+                <Text variant="caption" className="font-semibold text-text-dark leading-tight mb-2" numberOfLines={2}>
                     {title}
                 </Text>
 
-                {/* Rating */}
-                <View className="flex-row items-center mb-2">
-                    <Ionicons name="star" size={12} color="#f59e0b" />
-                    <Text variant="caption" className="text-text-dark font-medium ml-1 text-[11px]">
-                        {rating.toFixed(1)}
-                    </Text>
-                    <Text variant="caption" className="text-text-accent ml-1 text-[11px]">
-                        ({reviewCount})
-                    </Text>
-                </View>
+
 
                 {/* Variations (Colors) - Retail Only */}
                 {!isWholesale && colors && colors.length > 0 && (
                     <View className="flex-row items-center mb-2 gap-1.5">
                         {colors.slice(0, 4).map((c, i) => (
-                            <View key={i} className="w-3.5 h-3.5 rounded-full border border-black/10" style={{ backgroundColor: c }} />
+                            <View key={i} className="w-4 h-4 rounded-full border border-black/10" style={{ backgroundColor: c }} />
                         ))}
                         {colors.length > 4 && (
                             <Text variant="caption" className="text-[10px] text-text-accent ml-1">+{colors.length - 4}</Text>
@@ -141,12 +146,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                                 <Text variant="caption" className="text-text-accent text-[10px] mb-0.5 font-medium">
                                     {wholesaleTierText || `${wholesaleMoq}+ pcs`}
                                 </Text>
-                                <Text variant="h3" className="text-primary font-bold">
-                                    ${wholesalePrice.toFixed(2)}<Text variant="caption" className="text-primary text-[10px]"> / unit</Text>
+                                <Text variant="primary" className="text-primary font-bold">
+                                    ${wholesalePrice.toFixed(2)}<Text variant="caption" className="text-primary text-[10px] font-light"> / unit</Text>
                                 </Text>
                             </>
                         ) : (
-                            <Text variant="h3" className="text-primary font-bold">
+                            <Text variant="primary" className="text-primary font-bold">
                                 ${retailPrice.toFixed(2)}
                             </Text>
                         )}
@@ -155,9 +160,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                     {/* Add to Cart quick button */}
                     <TouchableOpacity
                         activeOpacity={0.8}
-                        className="w-8 h-8 bg-primary rounded-full items-center justify-center"
+                        className="w-6 h-6 bg-primary rounded-full items-center justify-center"
                     >
-                        <Ionicons name="add" size={20} color="#ffffff" />
+                        <Ionicons name="add" size={18} color="#ffffff" />
                     </TouchableOpacity>
                 </View>
             </View>
